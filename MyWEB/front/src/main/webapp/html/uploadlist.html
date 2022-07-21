@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>uploadresult.html</title>
+<style>
+  div.list{
+    border:1px solid; 
+    margin:10px;
+  }
+  div.list>ul{
+    list-style-type: none;
+    padding-left: 10px;
+  }
+  div.list>ul>li>img{
+    max-width: 100px;
+  }
+  div.list>ul>li>a{
+    text-decoration: none;
+  }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(function(){ // 화면에 보여줄 준비가 되자마자 ajax 요청
+    $.ajax({
+        url: '/back4/uploadlist',
+        // data : 'opt=1',
+        success:function(jsonObj){
+			let $ulObj = $('div.list>ul');
+			let liHtml = '';
+			$(jsonObj).each(function(index, info){
+				liHtml += '<li>'; 
+				
+				if(info.contentType.includes("image")){
+					liHtml += `<img id="${info.name}">`; // img파일 인 경우 img태그로 
+				}else{
+					liHtml += `<a href="/back4/download?filename=${info.name}" download>${info.name}</a>`;
+				} //img 파일이 아닌 경우 a 태그로 연결
+				liHtml += '</li>';
+			});
+			$ulObj.html(liHtml);
+		},
+		complete: function(jqXHR){ // success와 error 다 끝난 후 실행
+			showImage(); // a태그 혹은 img 태그들이 다 만들어졌을 떄 
+			
+		}
+    });
+	/*---두번째 div에서  모든 img태그 보여주기 START--*/
+	function showImage(){
+		let $img = $('div.list>ul>li>img');
+			$img.each(function(i, element){
+				let imgId = $(element).attr('id');	
+				$.ajax({
+					url: '/back4/download?filename='+imgId,
+					 cache:false,
+			         xhrFields:{
+			            responseType: 'blob' // 이미지 파일의 src속성 
+			        } , 
+			        success: function(responseData, textStatus, jqXhr){
+			        	let contentType = jqXhr.getResponseHeader("content-type");
+			        	let contentDisposition = decodeURI(jqXhr.getResponseHeader("content-disposition"));
+			       		var url = URL.createObjectURL(responseData);
+			       		$(element).attr('src', url);  // img 파일의 src속성 url ?!
+			        },
+			        error:function(){
+			        }
+				}); //end $.ajax
+			});//end each
+			/*---두번째 div에서  모든 img태그 보여주기 END--*/
+		}
+});
+</script>
+</head>
+<body>
+<h1>업로드 목록보기</h1>
+
+<div class="list" >
+  <h3>일반파일은 클릭하면 다운로드되도록 a태그로 만들고, 이미지파일은 img태그에 보여줍니다</h3>
+
+ <ul>
+ </ul>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+@charset "UTF-8";
+
+*{
+	box-sizing : border-box;
+}
+
+div.productlist>div.table{
+	width : 80%;
+	border:1px solid;
+	/* display: table; 테이블은 아니지만 테이블처럼 보여주는 것 */
+}
+
+/* div.productlist>div.table>div.tr{
+	display: table-row;
+} */
+
+div.productlist>div.table div.td{
+	width:96%;
+	border:1px solid;
+	/* display: table-cell; */
+	display:inline-block;
+	
+}
+
+div.productlist>div.table div.td>ul{
+	list-style-type:none;
+	margin-left:0px;
+}
+
+div.productlist div.table div.td> ul img {
+	width : 80%;
+	max-width :300px;
+}
+@media screen and (min-width:480px) {
+	div.productlist>div.table div.td{
+		width: 48%;
+	}
+}
+@media screen and (min-width:960px) {
+	div.productlist>div.table div.td{
+		width: 32%;
+	}
+}
+/* @media screen and (max-width:960px) {
+	div.productlist>div.table div.td{
+		width: 20%;
+		border: 1px solid;
+		display: inline-block;
+	}
+} */
+
+/*
+div.productlist>table{
+	width:300px;
+}
+div.productlist>table, div.productlist>table td{
+	border:1px solid;
+	border-collapse:collapse;
+}
+div.productlist>table td{
+	width:100px;
+}
+div.productlist>table td>ul img{
+	width:70%;
+	margin : 0 20px ;
+}
+div.productlist>table tr>td>ul{ 중간에 tbody가 있는데(자동) 뛰어넘고 자식으로 상속할 때 띄어쓰기로 표기 
+	list-style-type:none;
+	padding-left:0px;
+}
+*/
+

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>form.html</title>
+</head>
+<body>
+
+<!-- <form action = "https://www.naver.com/" autocomplete="off"> -->
+<form action = "https://localhost:8888/back/request" autocomplete="off">
+<!-- autocomplete="off" 자동완성 안 하게 하는 것 -->
+  <fieldset>
+    <legend>한줄입력</legend>
+    <label for="txt1">TEXT1:</label><input id="txt1" type="text" size="5" name="t1" value="tv1" required> 
+    <!-- inline X block요소라 크기 지정 O -->
+    <!-- name 서버로 전송, 서버로 전송된 값 -->
+    <!-- Size 화면에 보여주는 크기를 조정 -->
+  </fieldset>
+  <fieldset>
+    신용카드번호:<input maxlength="5" placeholder="5자리만 입력가능합니다." name="t2" required> 
+    <!-- maxlength는 사용자가 입력 가능한 문자 개수 /최대 5개의 문자만 입력 O -->
+    <!-- placeholder 도움말 -->
+    <fieldset>
+      <legend>읽기 전용</legend>
+      <input type="text" value ="읽기전용입니다." readonly>
+    </fieldset>
+    
+  </fieldset>
+  <fieldset>
+    PASSWORD:<input type="password" name="p" placeholder="비밀번호"  required>
+    <!-- 반드시 입력되어야하는 경우 -> require  -->
+
+  </fieldset>
+  
+  <fieldset>
+    <!-- checkbox 네모 타입 -->
+    <input type="checkbox" checked name="c" value="1">ONE&nbsp;&nbsp; 
+    <!-- checked 속성 -> 체크되어있음  -->
+    <input type="checkbox"		   name="c" value="2">TWO&nbsp;&nbsp;
+    <input type="checkbox" 		   name="c" value="3">THREE
+    <!-- one -> input태그의 body가 아닌 input element 바로 옆의  텍스트 -->
+    <!-- 세개 모두 선택 가능, 모두 선택하지 않아도 O -->
+  </fieldset>
+  
+  <fieldset>
+    <!-- radio 동그라미 타입 -->
+    <input type ="radio" name="r" value="1">ONE &nbsp;&nbsp; 
+    <input type ="radio" name="r" value="2" checked>TWO&nbsp;&nbsp;
+    <input type ="radio" name="r" value="3">THREE
+    <!-- name 속성을 주어 하나의 그룹으로 묶으면 셋 중 하나만 선택 가능 -->
+  </fieldset>
+  
+  <input type ="hidden" name="h" value="hv"> <!-- 노출X. 서버에 전송하기 위함 -->
+  <fieldset>
+  <input type ="file"> <!-- 파일선택. 목적1) 서버로 전송 / 목적2) 사진 파일 보이도록 -->
+  </fieldset>
+  
+  <fieldset>
+    <select name="s">
+      <option>ONE</option>
+      <option selected="selected">TWO</option>
+      <option>THREE</option>
+    </select>
+  </fieldset>
+  
+  <fieldset>
+    <textarea name="ta" cols="50" rows="5">multi line</textarea>
+    
+  </fieldset>
+  
+  <fieldset>
+    <legend>HTML5에 추가된 input태그의 type 속성값</legend>
+      <input type ="number" min="1" max="10" value="5">
+      <input type ="email" value="a@b.com">
+      <input type ="range" min="1" max="10" value="3">
+      <input type ="date" value="2022-09-27">
+      <input type ="search" value="검색어">
+  </fieldset>
+  
+  <fieldset>
+    <input type ="submit" value="전송"> <!-- name속성 가지고 있는 입력된 값 form 태그의 action의 주소로 전송 -->
+    <input type ="button" value="일반버튼"> <!-- 형태만 버튼 -->
+    <input type ="reset" value="RESET버튼"> <!-- 입력한 값들 리셋 -->
+  </fieldset>
+  
+  <fieldset>
+  <button>전송1</button> <!-- button type="submit"과 같음 --> 
+  <!-- button form태그 안에서는 submit 효과. 밖에서는 일반버튼의 효과 -->
+  <button type="button">일반버튼2</button> 
+  <button type="reset">RESET버튼2</button>
+  </fieldset>
+</form>
+
+<button>일반버튼3</button> <!-- <!-- button type="button"과 같음 --> -->
+
+</body>
+</html>

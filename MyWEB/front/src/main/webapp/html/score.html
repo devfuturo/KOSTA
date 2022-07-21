@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="UTF-8">
+</head>
+<body>
+   <div>
+      <img src="../images/movie.jpg" width="300">
+   </div>
+   <form action="/back/jsp/score.jsp">  <!--상대경로 -->
+      <input type="radio" name="score" value="1" checked> ★☆☆☆☆ <br>
+      <input type="radio" name="score" value="2" > ★★☆☆☆ <br>
+      <input type="radio" name="score" value="3" > ★★★☆☆ <br>
+      <input type="radio" name="score" value="4" > ★★★★☆ <br>
+      <input type="radio" name="score" value="5" > ★★★★★ <br>
+      <button>별점주기</button>
+   </form>   
+    <button class="ajax"> 별점주기(AJAX)</button>
+    <div class="result">
+        영화평점결과
+    </div>   
+</body>
+</html>

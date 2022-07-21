@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>blockinline.html</title>
+<!-- <style>
+//inner 스타일 (=internal css )
+#d3{
+  background-color:lightgray;
+  border:1px solid;
+  padding:3px;
+  margin:1px; 
+  width:200px;
+  display:inline-block;
+}
+</style> -->
+
+<!-- outer 스타일 =( external css) -->
+<link rel="stylesheet" href="../css/blockinline.css" /> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body>
+<!-- <div style="background-color:lightgray;border:1px solid; padding:3px;margin:1px; width:200px;">DIV1</div> 
+<div style="background-color:lightgray;border:1px solid; padding:3px;margin:1px; width:200px;
+			display:inline;">DIV2(inline 요소 : 자동 줄바꿈 X, 크기 지정 X, 상하마진 없음)</div>
+<div style="background-color:lightgray;border:1px solid; padding:3px;margin:1px; width:200px;
+			display:inline-block">DIV3(inline-block요소: 줄바꿈 안됨, 크기지정 가능, 상하마진 가짐)</div>
+
+<span style="background-color:lightgray;border:1px solid; padding:3px;margin:1px; width:200px;
+			display:block;">SPAN1(block요소 : 자동 줄바꿈 O, 크기 지정 O, 상하마진 O, 상하마진 겹침)</span>
+<span style="background-color:lightgray;border:1px solid; padding:3px;margin:1px; width:200px;">SPAN2</span>
+<span style="background-color:lightgray;border:1px solid; padding:3px;margin:1px; width:200px;">SPAN3</span> -->
+
+<div class="sample">DIV1(block요소 : 자동 줄바꿈 O, 크기 지정 O, 상하마진 O, 상하마진 겹침)</div> 
+<div class="sample" style = display:inline;>DIV2(inline요소 : 자동 줄바꿈 X, 크기 지정 X, 상하마진 없음)</div>
+<div id="d3">DIV3(inline-block요소: 줄바꿈 안됨, 크기지정 가능, 상하마진 가짐)</div>
+
+<span class="sample" style= "display:block;">SPAN1(block요소 : 자동 줄바꿈 O, 크기 지정 O, 상하마진 O, 상하마진 겹침)</span>
+<span class="sample">SPAN2</span>
+<span class="sample">SPAN3</span>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>css_overflow.html</title>
+</head>
+<body>
+<div>DIV1</div>
+<div 	 style= "background-color:lightgray;
+				 width:150px;height:250px;
+				 /* overflow:auto; */
+				 /* overflow : hidden; */
+				 /* overflow : scroll; */
+				 overflow-x : scroll; /* 실제 수직으로 데이터가 넘치기 때문에 수직도 scroll노출됨 */
+				 overflow-x : auto;
+				 ">
+				 
+	<div style= "background-color:red;		
+				 width:100px;height:100px;
+				 ">
+				 RED</div>
+				 
+	<div style= "background-color:green;	
+				 width:100px;height:100px;
+				 ">
+				 GREEN</div>
+				 			 
+	<div style= "background-color:blue;		
+				 width:100px;height:100px;
+				 ">BLUE</div> 
+</div>
+
+</body>
+</html>

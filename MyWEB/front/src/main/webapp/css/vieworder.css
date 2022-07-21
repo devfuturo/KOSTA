@@ -1,0 +1,14 @@
+@charset "UTF-8";
+
+*{
+	box-sizing : border-box;
+}
+
+div.vieworder{
+    border:1px solid;
+    /* display: flex; */
+}
+
+div.order_id{
+    display:none;
+}

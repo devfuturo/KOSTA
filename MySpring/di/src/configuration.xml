@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!--바디가 없는 태그를 만들고 싶으면 starttag에 슬래시 사용 -->
+	<!--선언부에 공백이나 주석 있으면 안됨 -->
+	<bean name="p" class="com.my.dto.Product">
+		<property name="prodNo" value="C0001" /> <!-- name속성 중복 O , id 속성은 중복 절대 X -->
+		<property name="prodName" value="아메리카노" />
+		<property name="prodPrice" value="1000" />
+	</bean>
+	<bean name="customerRepository"
+		class="com.my.repository.CustomerOracleRepository" /> <!-- 리파지토리 객체 생성 -->
+	<!-- class="com.my.repository.CustomerMySQLRepository"/> -->
+	<bean name="customerService"
+		class="com.my.service.CustomerService"> <!-- 서비스 객체 생성 -->
+		<constructor-arg ref="customerRepository" />
+		<!-- <property name="repository" ref="customerRepository"></property> --> <!-- 스프링 프레임워크의?! 다른객체 참조할 때 ref 속성 사용 -->
+	</bean>
+
+	<bean name="productRepository"
+		class="com.my.repository.ProductOracleRepository">
+		<constructor-arg ref="dataSource" />
+	</bean>
+	<bean name="productService" class="com.my.service.ProductService">
+		<!-- <constructor-arg ref="productRepository" /> --> 			<!-- 생성자를 통한 의존성 주입 -->
+		<property name="repository" ref="productRepository"></property> <!-- 세터 메서드를 통한 의존성 주입-->
+	</bean>
+	
+	<!--  MyConnection 파일  -->
+	<bean name="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource"> <!-- 자바에서 제공하는 simpleDriver 라이브러리 사용 -->
+		<property name="driverClass" value="oracle.jdbc.driver.OracleDriver" /> <!-- ojdbc.jar 라이브러리 필요-->
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe" /> <!-- (MyConnection의) 미리 결정되어있는 이름속성 따라가야함 -->
+		<property name="username" value="hr" />
+		<property name="password" value="hr" />
+		<!--  property 태그의 순서 상관 없음 -->
+	</bean>
+
+</beans>
+
+
+
+

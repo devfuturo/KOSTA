@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+table, tr, td{
+	border: 1px solid black;
+  	border-collapse: collapse;
+}
+
+tr:hover{
+	cursor: pointer;
+	color:red;
+}
+

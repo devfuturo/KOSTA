@@ -1,0 +1,24 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script>
+    window.addEventListener('load',function(){
+      document.querySelector('button').addEventListener('click',
+      function(){
+        var parentWindow = window.opener; // 팝업을 띄운 메인창 (parent 창)을 찾게됨
+        var parentBtClose = 
+          parentWindow.document.querySelector('button.close');
+        parentBtClose.style.display = 'none';
+        parentWindow.document.querySelector('button.open').style.display = 'inline';
+        window.close();
+      })
+    });
+  </script>
+    
+</head>
+
+<body>
+    <h1>팝업창</h1>
+    <button>창닫기</button>
+</body>
+</html>
