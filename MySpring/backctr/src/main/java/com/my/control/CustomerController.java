@@ -123,8 +123,5 @@ public class CustomerController { // 이 클래스가 스프링컨테이너로 �
 //		return  result;
 	
 		return null; // 아무값도 응답하지 않겠다
-
-	}
-	
-	
+	}	
 }

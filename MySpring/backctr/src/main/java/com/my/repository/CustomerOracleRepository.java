@@ -17,7 +17,6 @@ import com.my.exception.FindException;
 import com.my.sql.MyConnection;
 @Repository(value= "customerRepository")
 public class CustomerOracleRepository implements CustomerRepository {
-	
 	@Autowired
 	@Qualifier(value = "dataSource") // 동일 자료형인 경우 Qulifier로 구분한다
 	private DataSource ds;
@@ -66,7 +65,9 @@ public class CustomerOracleRepository implements CustomerRepository {
 		PreparedStatement pstmt = null;
 
 		String insertSQL = "INSERT INTO customer(id,pwd,name, address, status, buildingno) VALUES (?,?,?,?,1,?)";
-
+		
+		//
+		
 		try {
 //			con = MyConnection.getConnection(); //com.my.sql 패키지의 MyConnection과 연결
 			con = ds.getConnection();
