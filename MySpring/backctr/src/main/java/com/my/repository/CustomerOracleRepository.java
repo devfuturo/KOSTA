@@ -7,6 +7,8 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -20,41 +22,10 @@ public class CustomerOracleRepository implements CustomerRepository {
 	@Autowired
 	@Qualifier(value = "dataSource") // 동일 자료형인 경우 Qulifier로 구분한다
 	private DataSource ds;
-	
-	//	selectByIdAndPwd() 오버라이딩
-//	@Override
-//	public Customer selectByIdAndPwd(String id, String pwd) throws FindException {
-//		// DB와 연결
-//		Connection con= null;
-//		// SQL 송신
-//		PreparedStatement pstmt = null;
-//		// 송신 결과
-//		ResultSet rs = null;
-//		try {
-//			con = MyConnection.getConnection();
-//			String selectIdNPwdSQL = "SELECT * FROM customer WHERE id=? AND pwd=?"; //최대 1개 행 반환 (id -> pk / pk 행 개수 :1개) 최소 0개 행
-//			pstmt = con.prepareStatement(selectIdNPwdSQL);
-//			pstmt.setString(1, id);
-//			pstmt.setString(2, pwd);
-//			rs = pstmt.executeQuery();
-//
-//			if(rs.next()) { // 로그인 성공인 경우 
-//				return new Customer(rs.getString("id"),
-//						rs.getString("pwd"),
-//						rs.getString("name"),
-//						rs.getString("address"),
-//						rs.getInt("status"),
-//						rs.getString("buildingno")
-//						);
-//			}
-//			throw new FindException("고객이 없습니다");
-//		}catch (Exception e) {
-//			throw new FindException(e.getMessage());
-//		} finally {
-//			MyConnection.close(rs, pstmt, con);
-//		}
-//
-//	}
+
+	@Autowired
+	private SqlSessionFactory sessionFactory;
+
 
 	//	insert() 오버라이딩
 	@Override
@@ -65,11 +36,11 @@ public class CustomerOracleRepository implements CustomerRepository {
 		PreparedStatement pstmt = null;
 
 		String insertSQL = "INSERT INTO customer(id,pwd,name, address, status, buildingno) VALUES (?,?,?,?,1,?)";
-		
+
 		//
-		
+
 		try {
-//			con = MyConnection.getConnection(); //com.my.sql 패키지의 MyConnection과 연결
+			//			con = MyConnection.getConnection(); //com.my.sql 패키지의 MyConnection과 연결
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(insertSQL);
 			pstmt.setString(1, customer.getId());
@@ -91,40 +62,30 @@ public class CustomerOracleRepository implements CustomerRepository {
 	//selectById() 오버라이딩
 	@Override
 	public Customer selectById(String id) throws FindException {
-		//DB와 연결
-		Connection con = null;
-
-		//SQL송신
-		PreparedStatement pstmt = null;
-		ResultSet rs = null; //검색
-
-		String selectIdDupChkSQL = "SELECT * FROM customer WHERE id = ?";
+		SqlSession session = null;
 		try {
-//			con = MyConnection.getConnection();
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(selectIdDupChkSQL);
-			pstmt.setString(1, id);
-			rs = pstmt.executeQuery();
-			if(rs.next()) { // id에 만족하는 고객이 있을 경우
-				return new Customer( 
-						rs.getString("id"),
-						rs.getString("pwd"),
-						rs.getString("name"),
-						rs.getInt("address"),
-						rs.getString("status"),
-						rs.getString("buildingno")			 
-						);
+			session = sessionFactory.openSession(); //	여기에서의 Session은 Connection과 같은 의미
+			//	Http에서 받아오는 세션과는 다름
+			Customer c = session.selectOne("com.my.mapper.CustomerMapper.selectById", id); 
+			//	첫번째 인자 문자열, 두번째 인자 sql구문에 전달 될 parameter값
+			//	첫번째 인자 : customerMapper의 namespace(com.my.mapper.CustomerMappe).select의 id속성(selectById)
+			//	첫번째 인자의 mapper class 찾아가고 그 id속성으로 들어간 다음
+			//	두번째 인자의 id값이 CustomerMapper의 Where절의 #{id}로 감 (전달값)
+			//	SQL 구문 -> Oracle로 감 -> 결과 받아옴 -> Customer 객체 형태로 반환 -> c변수에 넣어 반환
+			//	selectOne 메서드는 rs.next()로 리턴받는 것까지 함
+
+			if(c == null) {
+				throw new FindException("고객이 없습니다"); 
 			}
-			throw new FindException("고객이 없습니다"); 
-			// ▲ 재사용성을 위해 repository 쪽에 메세지 구체적으로 적는 것 좋지 않음
-			// iddupchk 외에도 myinfo 조회 등에서도 이 메서드 사용 가능함
-			// controller쪽에서 메세지 구체화, 세분화하여 작성
-		} catch (SQLException e) {
+			return c ;
+		}catch(Exception e) {
 			e.printStackTrace();
 			throw new FindException(e.getMessage());
-		} finally {
-			MyConnection.close(rs, pstmt,con);
+		}finally {
+			if(session != null) {
+				session.close(); //	DB와의 연결을 끊겠다는 것이 아님. Connection pool(hikari CP)에다가 돌려준다
+				//	Connection 사용하고나면 늘 close 했어야하는데 스프링에서는 Session Close 하지 않아도 됨
+			}
 		}
-
 	}
 }

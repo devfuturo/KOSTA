@@ -2,16 +2,16 @@ package com.my.dto;
 
 public class Customer {
 	// has a 관계 가질 필요도 없는 기본 DTO.. ?! 
-	
-	/*
-	 * 
-	 */
 	private String id;
 	private String pwd;
 	private String name;
 	private int status;
 	private String address;
 	private String buildingno;
+	
+	public Customer() {
+		super();
+	}	
 	
 	public Customer(String id, String pwd, String name, int status, String address, String buildingno) {
 		super();

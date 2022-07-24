@@ -42,7 +42,7 @@
 		<!-- ▲ 너무 많이 만들면 처음 톰캣 로딩이 느려짐. 많이 만들고 한번 켜서 여러개 사용할 때는 오히려 좋을 수 있음-->
 	</bean>
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
-		<constructor-arg ref="hikariConfig"></constructor-arg>
+		<constructor-arg ref="hikariConfig" />
 	</bean>
 	
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
