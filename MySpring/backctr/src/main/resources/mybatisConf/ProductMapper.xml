@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.my.mapper.ProductMapper">
+	<select id="selectAll" resultType="Product"> <!--  여러 행 반환 -->
+	<!--  여러행을 반환한다고 도 List타입으로 작성하면 X -->
+	<!--  한 행의 정보를 매핑 해 줄 dto Class명을 적어주면 됨 -->
+	SELECT * FROM product ORDER BY prod_no ASC
+	<!-- 모든 상품 검색 해 오다보니 selectAll은 Parameter값이 없음 -->
+	<!-- CustomerMapper에서 사용한 태그에서는 parameter타입 있고 그 타입에 맞추어 작성 해야함 -->
+	<!-- parameter가 필요 없기 때문에(or 전달 할 자료가 딱 하나이기 때문에) parameter속성 생략해도 됨 -->
+	<!--  ▲ 이런 경우 자료 형은 전달 될 parameter값으로 사용 (ex. String) -->
+	</select>
+	<select id="selectByProdNo" resultType="Product" parameterType="string">
+	SELECT * 
+	FROM product 
+	WHERE prod_no=#{prodNo}
+	</select>
+	
+<!-- 	<select id="selectByProdNoOrProdName" parameterType="string" resultType="Product">
+	SELECT * 
+	FROM product
+	WHERE prod_no LIKE #{word} OR prod_name LIKE #{word}
+	</select>  -->
+	
+	<!--  parameter값이 string인 경우 ${value}로 사용--> 
+<!-- 	<select id="selectByProdNoOrProdName" parameterType="string" resultType="Product">
+	SELECT * 
+	FROM product
+	WHERE prod_no LIKE '%${value}%' OR prod_name LIKE '%${value}%' 
+	ORDER BY ${ }  --><!-- ${}는 가능 #{} 불가능 --> 
+	<!-- ORDER BY에 #{?}(값) 오는 것 불가. 컬럼명이 와야함 -->
+	<!-- #{a}와 같은 parameter로 주면 정상 처리 X, ?올 수 있는 곳은 값의 위치, 컬럼명에 사용X -->
+	
+	<!-- WHERE prod_no LIKE #{word} OR prod_name LIKE #{word} -->
+	 <!--  my-batis 에서 parameter이름 word라고 지정해서 전달
+	'%'#{word}와 같은 형태 불가능 따라서 JAVA쪽에서 처리 해 주어야함 
+	</select> -->
+	
+	<!--  parameter 값 map 형식 -->
+	<select id="selectByProdNoOrProdName" parameterType="hashmap" resultType="Product">
+	SELECT * 
+	FROM product
+	WHERE prod_no LIKE '%${word}%' OR prod_name LIKE '%${word}%' <!--  string인 경우 %{value}로 사용--> 
+	ORDER BY ${order} <!-- ${}는 가능 #{} 불가능 --> 
+	</select>
+	
+</mapper>

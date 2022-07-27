@@ -3,6 +3,8 @@ package com.my.dto;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /** 
  * 주문 기본 정보
  * @author gram
@@ -11,6 +13,8 @@ import java.util.List;
 public class OrderInfo {  //order_info 테이블의 class와 멤버변수 3개 만드는 것
 	private int orderNo; //주문번호 
 	private String orderId; //주문자 아이디
+	@JsonFormat(pattern="yy/MM/dd" , timezone="Asia/Seoul") // 잭슨라이브러리에서 제공하는 어노테이션
+	// ▲ Json 문자열 형태로 응답할 때 날짜값의 포맷을 패턴과 같은 형태로 표현 해 줌 
 	private Date orderDt; // 주문일자
 	private List<OrderLine> lines; // 주문 상세정보들 
 	//1대 다로 설계한 것 (orderline이 여러개 들어있는 형태)

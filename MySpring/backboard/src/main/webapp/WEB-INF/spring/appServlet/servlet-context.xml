@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+
+	<!--  Board.java 스트링 컨테이너가 관리할 객체로 등록 된 것 -->
+	<context:component-scan base-package="com.my.dto"></context:component-scan> 
+	<context:component-scan base-package="com.my.repository"></context:component-scan> 
+
+	<!-- HikariConfig : Database Connection Pool 사용 -->
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<property name="driverClassName"
+			value="oracle.jdbc.driver.OracleDriver">
+		</property>
+		<property name="jdbcUrl"
+			value="jdbc:oracle:thin:@localhost:1521:xe">
+		</property>
+		<property name="username" value="hr"></property>
+		<property name="password" value="hr"></property>
+		<property name="minimumIdle" value="3" /> <!-- 컨테이너가 구동 되자마자 미리 몇개를 만들 것인가 (최소 만들 값) -->
+		<!-- ▲ 너무 많이 만들면 처음 톰캣 로딩이 느려짐. 많이 만들고 한번 켜서 여러개 사용할 때는 오히려 좋을 수 있음-->
+	</bean>
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+		<constructor-arg ref="hikariConfig" />
+	</bean>
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!--<property name="configLocation" value="/WEB-INF/mybatis-config.xml"></property>  물리적인 경로 -->
+		<property name="configLocation" value="classpath:mybatisConf/mybatis-config.xml"></property> <!-- clsses기준 경로 -->
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+</beans>

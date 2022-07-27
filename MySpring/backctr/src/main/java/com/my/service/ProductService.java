@@ -36,4 +36,8 @@ public class ProductService {
 	public Product view(String prodNo) throws FindException {
 		return repository.selectByProdNo(prodNo);
 	}
+	
+	public List<Product> search(String word) throws FindException{
+		return repository.selectByProdNoOrProdName(word);
+	}
 }

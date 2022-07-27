@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+	<setting name="jdbcTypeForNull" value="NULL"/> <!-- java에서의 null은 oracle의 null과 같다 -->
+	<setting name="mapUnderscoreToCamelCase" value="true"/> <!--  카멜케이스 자동 매핑 하겠다 -->
+	</settings>
+	<typeAliases> <!--  com.my.dto.Customer을 매번 다 쓰기 어렵기 때문에 별칭을 줌 -->
+		<typeAlias type="com.my.dto.Board" alias="Board" />
+	</typeAliases>
+	
+  <mappers>
+    <!-- mapper 파일 -> class 경로 기준. 따라서 class경로부터 시작되어야 함 -->
+    <!-- 물리적인 경로가 아니라 실제 실행 되고 있는 class기준으로 찾아가게 되어있음--> 
+    <!--  지금 실행되는 classes 라는 경로 기준으로 -->
+    <mapper resource="mybatisConf/BoardMapper.xml"/> 
+  </mappers>
+</configuration>

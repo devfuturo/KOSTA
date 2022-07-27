@@ -3,6 +3,17 @@
   PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+	<settings>
+	<setting name="jdbcTypeForNull" value="NULL"/> <!-- java에서의 null oracle에서도 null로 표현 -->
+	<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+	<typeAliases> <!--  com.my.dto.Customer을 매번 다 쓰기 어렵기 때문에 별칭을 줌 -->
+		<typeAlias type="com.my.dto.Customer" alias="Customer" />
+		<typeAlias type="com.my.dto.Product" alias="Product" />
+		<typeAlias type="com.my.dto.OrderInfo" alias="OrderInfo" />		
+		<typeAlias type="com.my.dto.OrderLine" alias="OrderLine" />		
+	</typeAliases>
+	
   <!-- hikari CP 사용하기 때문에 필요없음 -->
   <!-- <environments default="development">
     <environment id="development">
@@ -15,10 +26,13 @@
       </dataSource>
     </environment>
   </environments> --> 
+  
   <mappers>
     <!-- mapper 파일 -> class 경로 기준. 따라서 class경로부터 시작되어야 함 -->
     <!-- 물리적인 경로가 아니라 실제 실행 되고 있는 class기준으로 찾아가게 되어있음--> 
     <!--  지금 실행되는 classes 라는 경로 기준으로 -->
     <mapper resource="mybatisConf/CustomerMapper.xml"/> 
+    <mapper resource="mybatisConf/ProductMapper.xml"/>
+    <mapper resource="mybatisConf/OrderMapper.xml"/> <!--  테이블 2개에 mapper(설정 파일)은 1개 -->
   </mappers>
 </configuration>

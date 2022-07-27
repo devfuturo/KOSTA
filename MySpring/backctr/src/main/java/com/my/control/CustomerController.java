@@ -63,11 +63,11 @@ public class CustomerController { // 이 클래스가 스프링컨테이너로 �
 	
 	@PostMapping("signup") // '/'패턴 있어도 없어도 상관 없음
 	@ResponseBody
-	public Map Signup(String id, String pwd, String name, String address, String buildingno) {
+	public Map signup(String id, String pwd, String name, String address, String buildingno) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("status", 0);
 		map.put("msg", "가입실패");	
-		Customer c = new Customer(id, pwd, name, address, 1, buildingno);
+		Customer c = new Customer(id, pwd, name, 1, address, buildingno);
 		
 		try {
 			service.signup(c);
@@ -82,7 +82,7 @@ public class CustomerController { // 이 클래스가 스프링컨테이너로 �
 	
 	@PostMapping("iddupchk")
 	@ResponseBody
-	public Map Iddupchk(String id) {
+	public Map iddupchk(String id) {
 
 		Map<String, Object> map = new HashMap<>();
 		String result = null;

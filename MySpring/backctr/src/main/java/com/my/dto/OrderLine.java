@@ -2,9 +2,9 @@ package com.my.dto;
 
 public class OrderLine {
 	private int orderNo;
-	private Product orderP;
+	private Product orderP; //	Has a 관계 
 	private int orderQuantity;
-	
+
 	public OrderLine() {}
 	
 	

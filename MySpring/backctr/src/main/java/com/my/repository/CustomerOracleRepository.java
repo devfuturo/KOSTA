@@ -1,10 +1,5 @@
 package com.my.repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSession;
@@ -16,13 +11,13 @@ import org.springframework.stereotype.Repository;
 import com.my.dto.Customer;
 import com.my.exception.AddException;
 import com.my.exception.FindException;
-import com.my.sql.MyConnection;
 @Repository(value= "customerRepository")
 public class CustomerOracleRepository implements CustomerRepository {
-	@Autowired
-	@Qualifier(value = "dataSource") // 동일 자료형인 경우 Qulifier로 구분한다
-	private DataSource ds;
-
+//	@Autowired
+//	@Qualifier(value = "dataSource") // 동일 자료형인 경우 Qulifier로 구분한다
+//	private DataSource ds;
+//	servlet-context.xml파일의 SqlSessionFactory에 보면 datasource와 이미 연결 되어있기 때문에 해당 부분 필요 없음
+	
 	@Autowired
 	private SqlSessionFactory sessionFactory;
 
@@ -30,34 +25,21 @@ public class CustomerOracleRepository implements CustomerRepository {
 	//	insert() 오버라이딩
 	@Override
 	public void insert(Customer customer) throws AddException {
-		// DB와 연결
-		Connection con= null;
-		// SQL 송신
-		PreparedStatement pstmt = null;
-
-		String insertSQL = "INSERT INTO customer(id,pwd,name, address, status, buildingno) VALUES (?,?,?,?,1,?)";
-
-		//
-
+		//더이상 DB와의 연결을 통해 사용하는 것이 아닌
+		//세션팩토리의 세션메서드로 사용
+		SqlSession session = null;
 		try {
-			//			con = MyConnection.getConnection(); //com.my.sql 패키지의 MyConnection과 연결
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(insertSQL);
-			pstmt.setString(1, customer.getId());
-			pstmt.setString(2, customer.getPwd());
-			pstmt.setString(3, customer.getName());
-			pstmt.setString(4, customer.getAddress());
-			pstmt.setString(5, customer.getBuildingno());
-			pstmt.executeUpdate(); //DB로 위에 입력된 값을 넘겨주고 DB에서 결과값을 보내줌 -> 결과값 보내주는 함수 executeUpdate()
-		} catch (SQLException e) {
+			session = sessionFactory.openSession();
+			session.insert("com.my.mapper.CustomerMapper.insert",customer); //인자값 mapper의 namespace, 전달할 parameter객체
+		}catch(Exception e) {
 			e.printStackTrace();
 			throw new AddException(e.getMessage());
-		} finally {
-			// DB연결 닫기
-			MyConnection.close(pstmt, con);
+		}finally {
+			if(session !=null) {
+				session.close();
+			}
 		}
 	}
-
 
 	//selectById() 오버라이딩
 	@Override

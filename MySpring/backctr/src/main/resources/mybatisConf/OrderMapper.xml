@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.my.mapper.OrderMapper">
+  <resultMap type="OrderInfo" id="orderMap" autoMapping="true"> 
+  <!-- resultMap -> OrderInfo타입의 객체 하나 만들어라 -->
+  <!-- Collection은 List 형태의 객체 만드는 것? List 형태 반환하라-->
+  	<id property="orderNo" column="order_no" /> <!--  property는 자바 객체의 멤버변수 명, 컬럼은 사용 될 컬럼명 -->
+  	<!-- <result property="orderId" column="order_id" /> 
+  	<result property="orderDt" column="order_dt" /> -->  <!--  나머지 채워지게 하려면 result로 -->
+ 	<collection property="lines" ofType="OrderLine" autoMapping="true">  <!-- List 형태의 멤버변수  -->
+ 		<id property="orderNo" column="order_no"/>
+ 		<id property="orderP.prodNo" column="prod_no"/> 
+ 		<!--  덮어쓰기 되면서 autoMapping 효과 내려면 orderP클래스의 멤버변수 이름이 orderP.orderProdNo로 되어있어야함-->
+ 		<!--  but orderP.prodNo으로 되면서 autoMapping실패하고 null값이 나옴 -->
+ 		<!--  이를 해결하기 위해 밑의 SQL구문의 line.order_prod_no을 p.prod_no으로 변경 -->
+ 		<association property="orderP" javaType="Product" autoMapping="true" />
+ 		
+ 	 	<!-- <result property="orderQuantity" column="order_quantity" /> 
+ 		<result property="orderP.prodName" column="prod_name" />  이 부분은 자동 매핑 불가능
+ 		<result property="orderP.prodPrice" column="prod_price" /> 
+ 		 -->
+ 		<!--  result태그를 각각 사용하는 건 데이터 양이 많아졌을 때 관리가 어려움 -->
+ 		<!--  따라서 collection 태그의 autoMapping=true 주면 자동 매핑 됨(언더스코어, 카멜케이스 매핑) -->
+ 		<!--  id 태그는 반드시 설정해서 객체 식별자 어떤 것인지 설정해 주어야 함 -->
+ 	</collection>
+  </resultMap>
+  
+  <insert id="insertInfo" parameterType="OrderInfo">
+  INSERT INTO order_info(ORDER_NO,ORDER_ID,ORDER_DT) 
+  VALUES (order_seq.NEXTVAL, #{orderId}, SYSDATE)
+  <!--  OrderInfo의 멤버변수의 이름 orderId -->
+  </insert>
+  
+  <insert id="insertLine" parameterType="OrderLine">
+  INSERT INTO order_line(ORDER_NO, ORDER_PROD_NO, ORDER_QUANTITY) 
+  VALUES (order_seq.CURRVAL, #{orderP.prodNo}, #{orderQuantity}) 
+  <!-- orderLine dto에서 제공하는 멤버변수 이름 그대로 사용 -->
+  <!-- orderLine의 orderP를 먼저 찾아가고 Product의 prodNo을 찾아감 -->
+  </insert>
+  
+  <select id="selectById" parameterType="string" resultMap="orderMap" > <!-- resultType="OrderInfo" 대신 resultMap으로 바꿈 --> 
+  SELECT info.order_no, info.order_id, info.order_dt,
+  		 order_quantity, 
+  		 p.prod_no, p.prod_name,prod_price
+  FROM order_info info JOIN order_line line ON (info.order_no = line.order_no)
+                       JOIN product p ON (line.order_prod_no = p.prod_no)
+  WHERE order_id = #{id}
+  ORDER BY info.order_no DESC, line.order_prod_no ASC
+  </select>
+  </mapper>
+  
