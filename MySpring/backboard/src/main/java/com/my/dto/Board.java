@@ -23,6 +23,7 @@ import lombok.ToString;
 // @Data // 위의 모든 것을 다 대체 해 줌
 public class Board {
 	private int level; // 글 레벨 : 1 - 원글, 2-답글, 3-답답글, 4-답답답글...
+	
 	private int boardNo ; // 게시글번호
 	private int boardParentNo ;
 	

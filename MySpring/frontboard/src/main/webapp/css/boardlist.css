@@ -1,0 +1,26 @@
+*{
+    box-sizing: border-box ;
+}
+div.boardlist{
+	display : table;
+	width : 80%;
+	border:1px solid ;
+}
+div.boardlist>div.board{
+	display:table-row;
+	width : 100%;
+}
+div.boardlist>div.board>*{
+	display: table-cell;
+	width : 15%;
+	border : 1px solid ;
+}
+
+div.pagegroup>span{
+	border: 1px solid;
+	padding : 3px;
+}
+
+div.pagegroup>span:hover{
+	background-color: beige;
+}

@@ -17,11 +17,14 @@ import com.my.exception.AddException;
 import com.my.exception.FindException;
 import com.my.exception.ModifyException;
 import com.my.exception.RemoveException;
-@RunWith(SpringRunner.class)
-@ContextConfiguration(locations= {
+// 스프링 컨테이너 (ApplicationContext) 구동하기 위한 (스프링컨테이너를 시작시키기 위한) 어노테이션
+@RunWith(SpringRunner.class) 
+
+//Spring 컨테이너용 XML파일 설정
+@ContextConfiguration(locations= { // 스프링 컨테이너 시작하기 위한 설정 파일
 			"file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml"})
 public class BorardRepositoryTest {
-	@Autowired
+	@Autowired // 멤버변수 자동 주입되도록
 	private BoardRepository repository;
 	
 	@Test
@@ -115,10 +118,11 @@ public class BorardRepositoryTest {
 	
 	@Test(expected = FindException.class)
 	public void testDelete() throws RemoveException, FindException {
-		int boardNo = 1 ;
+		int boardNo=1;
 		repository.delete(boardNo);
 		repository.selectByBoardNo(boardNo);
 	}
+	
 	@Test
 	public void testInsert() throws AddException, FindException {
 		// 글쓰기용 테스트

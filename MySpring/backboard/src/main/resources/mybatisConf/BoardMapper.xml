@@ -8,7 +8,7 @@
 		FROM (
 		SELECT rownum r, a.*
 		FROM (SELECT level,
-		board_no, board_parent_no, board_title, board_content, board_id,
+		board_no, board_parent_no, board_title, board_content, board_id, board_dt,
 		board_viewcount
 		FROM board
 		START WITH board_parent_no = 0
@@ -33,7 +33,7 @@
 		FROM (
 		SELECT rownum r, a.*
 		FROM (SELECT level,
-		board_no, board_parent_no, board_title, board_content, board_id,
+		board_no, board_parent_no, board_title, board_content, board_id, board_dt,
 		board_viewcount
 		FROM board
 		WHERE board_title LIKE '%${word}%' OR board_id LIKE '%${word}%'
@@ -79,7 +79,6 @@
 	                              FROM board
 	                              START WITH board_parent_no = #{boardNo}
 	                              CONNECT BY PRIOR board_no = board_parent_no)
-	
 	</delete>
 	
 	<delete id="deleteBoard" parameterType="int">

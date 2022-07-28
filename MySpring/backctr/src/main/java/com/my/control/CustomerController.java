@@ -32,7 +32,6 @@ public class CustomerController { // 이 클래스가 스프링컨테이너로 �
 //		String id = request.getParameter("id");
 //		String pwd = request.getParameter("pwd");
 
-		//Jackson 사용하여 Json형태로 응답
 //		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> map = new HashMap<>();
 		map.put("status", 0);

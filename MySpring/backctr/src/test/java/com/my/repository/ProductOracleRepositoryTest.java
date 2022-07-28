@@ -27,9 +27,9 @@ public class ProductOracleRepositoryTest {
 	
 	@Autowired // 멤버변수 자동 주입되도록
 	private ProductOracleRepository repository;
+	
 	@Test
 	public void testSelectByProdNo() throws FindException {
-		//fail("Not yet implemented"); 
 		String prodNo ="C0001";
 		String expectedProdName = "제주비자림콜드브루";
 		int expectedProdPrice = 4000;
