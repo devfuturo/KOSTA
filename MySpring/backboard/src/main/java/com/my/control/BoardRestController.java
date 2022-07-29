@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.ServletContext;
@@ -17,13 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.my.dto.Board;
@@ -31,11 +33,15 @@ import com.my.dto.PageBean;
 import com.my.dto.ResultBean;
 import com.my.exception.AddException;
 import com.my.exception.FindException;
+import com.my.exception.ModifyException;
 import com.my.service.BoardService;
 
 import net.coobird.thumbnailator.Thumbnailator;
-//@Controller
-public class BoardController {
+
+// 스프링 프레임워크에서 제공하는 RESTful용 API  
+@RestController // @Controller 와 @ResponseBody 사용하는 경우라면 @RestController로 대체
+@RequestMapping("/board/*") // 각 메서드 앞에 붙여도 OK
+public class BoardRestController {
 	private Logger logger = Logger.getLogger(getClass());
 	@Autowired
 	private BoardService service;
@@ -43,13 +49,28 @@ public class BoardController {
 	@Autowired
 	private ServletContext sc;
 
-	@GetMapping("boardlist") 
-	@ResponseBody // @ResponseBody -> 스프링 mvc구조의 모듈 사용하지 않겠다.
-	public ResultBean<PageBean<Board>> list(@RequestParam(required = false, defaultValue="1") int currentPage) {
-		// parameter값 전달이 안 되어도 상관 없고, 전달 되지 않을 시 초기값 1로 주겠다.
-		// controller가 front에게 응답할 dto를 더 만들어도 좋음 -> ResultBean
+	//GET /backboard/board/list
+	//GET /backboard/board/list/페이지번호
+	@GetMapping(value = {"list", "list/{optCp}"}) //optional currentPage
+	//RESTful 형태로 주소 구성할 때 요청전달데이터가 uri의 path로 사용됨 -> {}로 표현
+	// ▲ /list 와  list/1 둘 다 작동하도록 하겠다
+	public ResultBean<PageBean<Board>> list(@PathVariable //int currentPage) { // 매개변수 명과 {}안의 이름값 같아야함
+			Optional<Integer> optCp){ //java에서 주는 라이브러리
+		// 요청전달데이터 전달 될 때 requestparam통해 required = false로 설정할 수 있음
+		// 요청전달데이터 전달되지 않을 때를 대비하여 사용하는 RESTful의 @pathVariacle은 Optional로 설정 해 둬야함
+		// Optional은 java.util에서 제공. null값 체크를 쉽게 할 수 있음
+		//currentPage 값을 전달하지 않으면 PathVariable값이 optional로 전달 되어 PathVariable 전달된 값 null인지 아닌지 확인 가능?!
+
+		//		optCp.ifPresent(null); // currentPage값이 존재하면 ~이라는 메서드
 		ResultBean<PageBean<Board>> rb = new ResultBean<>();
 		try {
+			int currentPage;
+			if(optCp.isPresent()) { // 값이 있는지 없는지 확인 해 주는 메서드 (존재 시 true 반환, 미존재 시 false 반환)
+				currentPage = optCp.get();
+			} else { // 없으면
+				currentPage = 1; // currentPage 값 1로 준다
+			}
+			// ▲ /list/2와 같이 currentPage번호 주어지면 그 값을 넣고,  /list 와 같이 전달되지 않으면 1로 준다는 의미
 			PageBean<Board> pb = service.boardList(currentPage);
 			rb.setStatus(1);
 			rb.setT(pb);
@@ -61,14 +82,34 @@ public class BoardController {
 		return rb;
 	}
 
-	@GetMapping("searchboard")
-	@ResponseBody
+	//  GET /backboard/search/검색어/페이지번호   /search/답/3
+	//  GET /backboard/search/검색어			  /search/답
+	//  GET /backboard/search/페이지번호 		  /search//3 (X) -> 중간경로 생략 불가  
+	//  GET /backboard/search/페이지번호 		  /search/3  (X) -> 3을 검색어로 처리함
+	//  GET /backboard/search					  /search			
+	@GetMapping(value = {"search/{optWord}/{optCp}", "search/{optWord}", "search"})
 	public ResultBean<PageBean<Board>> search(
-			@RequestParam(required = false, defaultValue="1") int currentPage, 
-			@RequestParam(required = false, defaultValue="") String word){
+			@PathVariable Optional<Integer> optCp,
+			@PathVariable Optional<String> optWord){
 		ResultBean<PageBean<Board>> rb = new ResultBean<>();
-		PageBean<Board> pb ;
 		try {
+			PageBean<Board> pb ;
+			String word = "";
+			if(optWord.isPresent()) {
+				word = optWord.get();
+			}
+			else {
+				word= "";
+			}
+
+			int currentPage =1;
+			if(optCp.isPresent()) {
+				currentPage = optCp.get();
+			}
+			//			else {
+			//				currentPage = 1;
+			//			}
+
 			if("".equals(word)) {
 				pb = service.boardList(currentPage);
 			}else {
@@ -84,9 +125,8 @@ public class BoardController {
 		return rb;
 	}
 
-	@GetMapping("viewboard")
-	@ResponseBody
-	public ResultBean<Board> viewBoard(int boardNo){
+	@GetMapping("view/{boardNo}")
+	public ResultBean<Board> viewBoard(@PathVariable int boardNo){
 		ResultBean<Board> rb = new ResultBean<>();
 		try {
 			Board b = service.viewBoard(boardNo);
@@ -100,32 +140,18 @@ public class BoardController {
 		return rb;
 	}
 
-	// 파일 업로드 같은 경우는 단위테스트 쉽지 않음 따라서 톰캣 작동 시켜서 Postman으로 테스트할 것
-	@PostMapping("/writeboard")
-	// @ResponseBody public Map wirte() -> 응답 성공 시 json 문자열로 format하여 응답내용으로 사용 
-	@ResponseBody
-	// ▼ 응답 성공, 실패 여부만 응답하고 싶음 
-	// Json문자열로 응답하고 싶지 않은 것
+
+	// Post /backboard/board/write/글제목/글내용 (X) 
+	// 파일 업로드 할 때는 formData 필요한데 formData 사용할 때는 PathVariable 사용 X
+	// RESTful 사용 시 파일 업로드 할 때 PathVariable 사용하지 않음
+	// 파일 업로드 할 때는 요청전달데이터 꼭 필요하기 때문에 RESTful 사용 불가
+	@PostMapping("write")
 	public ResponseEntity<?> write(  
 			@RequestPart(required = false) List<MultipartFile> letterFiles 
 			,@RequestPart(required = false) MultipartFile imageFile
 			,Board board
 			,String greeting 
 			,HttpSession session){
-		// greeting 은 샘플용으로 만들어 둔 것 
-		// ResponseBody는 무조건 응답 내용을 mvc구조를 쓰지 않겠다 
-		// 두 줄의 조합 (Response ~ write) HTTP버전이 먼저 응답되고 응답 상태 코드를 우리가 조절할 수 있음
-		// 응답 상태 코드를 200번, 404, 500, 300번 등으로 강제시킬 수 있음 
-		// ResponseEntity -> 응답 상태 코드 조절 / 응답 성공 시 200번으로 설정, 내용도 지정 가능
-		// 상태코드값을 결정(제어)해서 간단히 응답 -> 네트워크 비용 절감 가능
-
-		// 응답 상태 코드값 조절할 것 
-		// 200번 : 파일 업로드 성공, 썸네일 파일 생성 성공 글쓰기 성공 (응답 내용 : 썸네일 파일 내용)
-		// 500번 : 파일 업로드 실패. 글쓰기 실패
-		// 원래 -> 응답 상태 200번 - status:1 성공, status:0 실패	
-
-		// MultipartFile을 사용하기 위해선 RequestPart어노테이션을 붙여줘야함
-		// required = false 인 경우 -> 필수로 첨부하지 않아도 됨
 
 		logger.info("요청전달데이터 title=" + board.getBoardTitle() + ", content=" + board.getBoardContent());
 		logger.info("letterFiles.size()=" + letterFiles.size());
@@ -252,4 +278,21 @@ public class BoardController {
 
 	}
 
+
+	//  PUT /backboard/board/글번호/글내용
+	@PutMapping("modify/{boardNo}")
+	public void modifyBoard(@PathVariable Board board) {
+		try {
+			service.modifyBoard(board);
+		} catch (ModifyException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	// DELETE /backboard/board/글번호 
+	public void removeBoard(@PathVariable int boardNo) {
+		ResultBean<Board> rb = new ResultBean<>();
+	
+	}
 }

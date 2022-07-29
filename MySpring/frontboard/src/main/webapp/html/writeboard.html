@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+</head>
+<body>
+<link rel="stylesheet" href="../css/writeboard.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="../jq/writeboard.js"></script>
+<div class="write">
+	<h2>글쓰기</h2>
+	<form>
+		<div class="data"><label>글제목</label><input type="text" name="boardTitle"></div>
+		<div class="data"><label>자소서및이력서첨부</label><input type="file" name="letterFiles" multiple>	</div> 
+		<!-- multiple -> 여러개 첨부 가능 -->
+		<div class="data"><label>이미지첨부</label><input type="file" name="imageFile" accept="image/jpeg, image/jpg, image/png" ></div> <!-- 첨부될 파일의 형식이 image만 가능하도록 accept 줌 -->
+		<!-- 이미지 파일을 하나 첨부하고 다른 파일로 변경 시 input 태그에서 change 이벤트가 발생함 -->
+		<!-- change이벤트 발생 하자마자 지금 선택한 파일을 아래쪽 영역에 (미리보여주기로)보여주고 싶은 경우 -->
+		<div class="image">
+		     <img class="preview" style="max-width:100px;"><!-- 이미지 미리보기용 태그  -->
+		     <img class="downloadview"><!-- 글쓰기후 이미지다운로드용 태그 -->
+		 </div>
+		<div class="data"><label>글내용</label><textarea name="boardContent"></textarea></div>
+		<input type="button" value="글쓰기">
+	</form>
+</div>
+</body>
+</html>
