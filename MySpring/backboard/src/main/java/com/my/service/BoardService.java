@@ -10,6 +10,7 @@ import com.my.dto.PageBean;
 import com.my.exception.AddException;
 import com.my.exception.FindException;
 import com.my.exception.ModifyException;
+import com.my.exception.RemoveException;
 import com.my.repository.BoardRepository;
 
 @Service
@@ -130,7 +131,18 @@ public class BoardService {
 		board.setBoardParentNo(0); // 부모 글 번호 0으로 설정해야 수정 가능
 		repository.update(board);
 	}
-
+	
+	/**
+	 * 답글, 게시글 삭제하기
+	 * @param board
+	 * @throws RemoveException 
+	 * @throws ModifyException
+	 */
+	public void removeBoard(int boardNo) throws RemoveException {
+		Board b = new Board();
+		b.setBoardNo(boardNo); // 게시글 번호를 설정해야 삭제 가능?!
+		repository.delete(boardNo);
+	}
 	
 	
 }

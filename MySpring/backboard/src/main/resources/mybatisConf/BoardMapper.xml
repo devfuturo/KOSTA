@@ -4,15 +4,18 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.my.mapper.BoardMapper">
 	<select id="selectByPage" parameterType="map" resultType="Board">
-		SELECT *
+		SELECT
+		*
 		FROM (
 		SELECT rownum r, a.*
 		FROM (SELECT level,
-		board_no, board_parent_no, board_title, board_content, board_id, board_dt,
+		board_no,
+		board_parent_no, board_title, board_content, board_id, board_dt,
 		board_viewcount
 		FROM board
 		START WITH board_parent_no = 0
-		CONNECT BY PRIOR board_no = board_parent_no
+		CONNECT BY
+		PRIOR board_no = board_parent_no
 		ORDER SIBLINGS BY board_no DESC
 		) a
 		)
@@ -24,7 +27,8 @@
 
 	<select id="selectCount2" resultType="int"
 		parameterType="string">
-		SELECT COUNT(*) FROM board WHERE board_title LIKE '%${value}%' OR board_id
+		SELECT COUNT(*) FROM board WHERE board_title LIKE
+		'%${value}%' OR board_id
 		LIKE '%${value}%'
 	</select>
 
@@ -33,12 +37,15 @@
 		FROM (
 		SELECT rownum r, a.*
 		FROM (SELECT level,
-		board_no, board_parent_no, board_title, board_content, board_id, board_dt,
+		board_no,
+		board_parent_no, board_title, board_content, board_id, board_dt,
 		board_viewcount
 		FROM board
-		WHERE board_title LIKE '%${word}%' OR board_id LIKE '%${word}%'
+		WHERE board_title LIKE '%${word}%' OR
+		board_id LIKE '%${word}%'
 		START WITH board_parent_no = 0
-		CONNECT BY PRIOR board_no = board_parent_no
+		CONNECT BY
+		PRIOR board_no = board_parent_no
 		ORDER SIBLINGS BY board_no DESC
 		) a
 		)
@@ -46,59 +53,61 @@
 		<!-- #은 ?를 대신할 값이고 $는 값을 대신하는 것 -->
 	</select>
 
-	<select id="selectByBoardNo" resultType="Board" parameterType="int"> <!-- board내용 전부 가져와야하기 때문에 Board 타입 -->
+	<select id="selectByBoardNo" resultType="Board"
+		parameterType="int"> <!-- board내용 전부 가져와야하기 때문에 Board 타입 -->
 		SELECT *
 		FROM board
 		WHERE board_no = #{boardNo}
 	</select>
 
 	<update id="update" parameterType="Board">
-	UPDATE board
-	<set>
-	<choose>
-	<when test="boardContent != null">
-	board_content = #{boardContent}
-	</when>
-	<when test="boardViewcount == -1">
-	board_viewcount = board_viewcount+1
-	</when>
-	</choose>
-	</set>
-	WHERE board_no=#{boardNo}
+		UPDATE board
+		<set>
+			<choose>
+				<when test="boardContent != null">
+					board_content = #{boardContent}
+				</when>
+				<when test="boardViewcount == -1">
+					board_viewcount = board_viewcount+1
+				</when>
+			</choose>
+		</set>
+		WHERE board_no=#{boardNo}
 	</update>
 
 	<!-- SET board_content = #{boardContent}, board_title=#{boardTitle} -->
 
 	<!-- **<choose>** Java의 switch() **<when>** java의 case **<otherwise>** java 
 		의 default -->
-<!-- SET board_content = #{boardContent}, board_title = #{boardTitle} -->
+	<!-- SET board_content = #{boardContent}, board_title = #{boardTitle} -->
+
+
 
 	<delete id="deleteReply" parameterType="int">
-	DELETE FROM board
-	WHERE board_no IN ( SELECT  board_no
-	                              FROM board
-	                              START WITH board_parent_no = #{boardNo}
-	                              CONNECT BY PRIOR board_no = board_parent_no)
+		DELETE FROM board
+		WHERE board_no IN ( SELECT board_no
+		FROM board
+		START WITH board_parent_no = #{boardNo}
+		CONNECT BY PRIOR board_no = board_parent_no)
 	</delete>
-	
 	<delete id="deleteBoard" parameterType="int">
-	DELETE FROM board
-	WHERE board_no = #{boardNo}
+		DELETE FROM board
+		WHERE board_no = #{boardNo}
 	</delete>
 	<!-- 답글 삭제와 게시글 삭제는 같은 트랜젝션 안에서 이루어져야 함 -->
 	<!-- 하나가 문제가 생기면 나머지 하나도 롤백 되어야함 -->
-	
+
+
 	<insert id="insert" parameterType="Board">
-		<selectKey
-	  	keyProperty="boardNo" 
-	  	resultType="int"
-	  	order="AFTER" 
-	  	statementType="PREPARED">
-		SELECT board_seq.CURRVAL FROM dual
-  		<!-- keyProperty -> parameter로 전달된 Board 객체의 멤버변수 boardNo -->	
-		<!-- order="AFTER" : 추가 후 -->
-		</selectKey>	
-	INSERT INTO board(board_no, board_parent_no, board_title, board_content, board_id, board_viewcount)
-	VALUES (board_seq.NEXTVAL, #{boardParentNo}, #{boardTitle}, #{boardContent}, #{boardId}, 0)	
+		<selectKey keyProperty="boardNo" resultType="int"
+			order="AFTER" statementType="PREPARED">
+			SELECT board_seq.CURRVAL FROM dual
+			<!-- keyProperty -> parameter로 전달된 Board 객체의 멤버변수 boardNo -->
+			<!-- order="AFTER" : 추가 후 -->
+		</selectKey>
+		INSERT INTO board(board_no, board_parent_no, board_title,
+		board_content, board_id, board_viewcount)
+		VALUES (board_seq.NEXTVAL, #{boardParentNo}, #{boardTitle}, #{boardContent},
+		#{boardId}, 0)
 	</insert>
 </mapper>

@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.my.dto.Board;
 import com.my.exception.AddException;
@@ -19,10 +20,11 @@ import com.my.exception.ModifyException;
 import com.my.exception.RemoveException;
 // 스프링 컨테이너 (ApplicationContext) 구동하기 위한 (스프링컨테이너를 시작시키기 위한) 어노테이션
 @RunWith(SpringRunner.class) 
-
+@WebAppConfiguration
 //Spring 컨테이너용 XML파일 설정
-@ContextConfiguration(locations= { // 스프링 컨테이너 시작하기 위한 설정 파일
-			"file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml"})
+@ContextConfiguration(locations= {
+"file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml"})// 스프링 컨테이너 시작하기 위한 설정 파일
+
 public class BorardRepositoryTest {
 	@Autowired // 멤버변수 자동 주입되도록
 	private BoardRepository repository;

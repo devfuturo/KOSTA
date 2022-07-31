@@ -123,7 +123,6 @@ public class BoardOracleRepository implements BoardRepository {
 		}
 	}
 
-
 	@Override
 	public void delete(int boardNo) throws RemoveException {
 		SqlSession session = null;
@@ -131,46 +130,33 @@ public class BoardOracleRepository implements BoardRepository {
 			session = sqlSessionFactory.openSession();
 			deleteReply(session, boardNo);
 			deleteBoard(session, boardNo);
-			// 답글 삭제와 게시글 삭제는 같은 트랜잭션 안에서 이루어져야 함
-			// 하나가 문제가 생기면 나머지 하나도 롤백 되어야 하기 때문에 같은 세션 사용
-		}catch(Exception e) {
-			// 트랜잭션 롤백
+		}catch (Exception e) {
+			// 트랜잭션 롤백 필요
 			e.printStackTrace();
 			throw new RemoveException(e.getMessage());
 		}finally {
-			if(session!=null) {
+			if(session != null) {
 				session.close();
 			}
 		}
-
 	}
-
-	private void deleteReply (SqlSession session, int boardNo) throws RemoveException {
+	private void deleteReply(SqlSession session, int boardNo) throws RemoveException{
 		try {
 			session.delete("com.my.mapper.BoardMapper.deleteReply", boardNo);
 		}catch(Exception e) {
 			e.printStackTrace();
 			throw new RemoveException(e.getMessage());
-		}finally {
-			if(session!=null) {
-				session.close();
-			}
 		}
 	}
-
-	private void deleteBoard(SqlSession session, int boardNo) throws RemoveException {
+	private void deleteBoard(SqlSession session, int boardNo) throws RemoveException{
 		try {
 			int rowcnt = session.delete("com.my.mapper.BoardMapper.deleteBoard", boardNo);
 			if(rowcnt == 0) {
-				throw new RemoveException("삭제된 행 수 : "+ rowcnt);
+				throw new RemoveException("삭제된 행 수:" + rowcnt);
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
 			throw new RemoveException(e.getMessage());
-		} finally {
-			if(session!=null) {
-				session.close();
-			}
 		}
 	}
 

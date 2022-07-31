@@ -19,6 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +35,7 @@ import com.my.dto.ResultBean;
 import com.my.exception.AddException;
 import com.my.exception.FindException;
 import com.my.exception.ModifyException;
+import com.my.exception.RemoveException;
 import com.my.service.BoardService;
 
 import net.coobird.thumbnailator.Thumbnailator;
@@ -280,19 +282,25 @@ public class BoardRestController {
 
 
 	//  PUT /backboard/board/글번호/글내용
-	@PutMapping("modify/{boardNo}")
-	public void modifyBoard(@PathVariable Board board) {
+	@PutMapping("{boardNo}/{boardContent}")
+	public void modifyBoard(@PathVariable int boardNo, @PathVariable String boardContent) {
 		try {
+			Board board = new Board();
+			board.setBoardNo(boardNo);
+			board.setBoardContent(boardContent);
 			service.modifyBoard(board);
 		} catch (ModifyException e) {
 			e.printStackTrace();
 		}
-		
 	}
-	
+
 	// DELETE /backboard/board/글번호 
+	@DeleteMapping("{boardNo}")
 	public void removeBoard(@PathVariable int boardNo) {
-		ResultBean<Board> rb = new ResultBean<>();
-	
+		try {
+			service.removeBoard(boardNo);
+		} catch (RemoveException e) {
+			e.printStackTrace();
+		}
 	}
 }
